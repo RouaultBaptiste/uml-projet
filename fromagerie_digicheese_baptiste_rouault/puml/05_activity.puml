@@ -1,0 +1,114 @@
+@startuml
+title DIGICHEESE — Diagramme d’activité (Gestion des colis)
+skinparam shadowing false
+
+' ==========================================================
+' Objectif :
+' - Décrire le flux "gestion des colis" (happy path + erreurs)
+' - Rendre explicites : choix manuel / scission / arrêt
+' - Placer les statuts aux moments clés (conditionné/affranchi/expédié)
+' ==========================================================
+
+start
+
+partition "Opérateur colis" {
+  :Authentification;
+  :Rechercher client;
+}
+
+if (Client existe ?) then (Oui)
+  partition "Système" {
+    :Charger fiche client;
+  }
+else (Non)
+  partition "Opérateur colis" {
+    :Créer fiche client;
+  }
+  partition "Système" {
+    :Enregistrer client;
+  }
+endif
+
+partition "Opérateur colis" {
+  :Créer/ouvrir commande;
+  :Ajouter lignes (objets, quantités);
+}
+
+partition "Système" {
+  :Calculer conditionnement\n(règles min/max);
+}
+
+if (Emballage trouvé ?) then (Oui)
+  partition "Système" {
+    :Affecter emballage;
+    :Statut = CONDITIONNE;
+  }
+else (Non)
+  partition "Opérateur colis" {
+    :Alerte "Conditionnement impossible";
+    :Décider : choix manuel ou scission ou abandon;
+  }
+
+  if (Choix manuel ?) then (Oui)
+    partition "Opérateur colis" {
+      :Sélectionner emballage manuellement;
+    }
+    partition "Système" {
+      :Affecter emballage;
+      :Statut = CONDITIONNE;
+    }
+  else (Non)
+    if (Scinder en plusieurs colis ?) then (Oui)
+      partition "Système" {
+        :Créer colis supplémentaires;
+        :Affecter emballages selon règles\n(par colis);
+        :Statut = CONDITIONNE;
+      }
+    else (Non)
+      partition "Opérateur colis" {
+        :Abandon / correction commande;
+      }
+      stop
+    endif
+  endif
+endif
+
+partition "Système" {
+  :Calculer poids total\n(articles + emballage);
+  :Calculer affranchissement\n(poids -> tarif);
+}
+
+if (Tarif trouvé ?) then (Oui)
+  partition "Système" {
+    :Enregistrer poids + prix + tranche;
+    :Statut = AFFRANCHI;
+  }
+else (Non)
+  partition "Opérateur colis" {
+    :Alerte "Tarif manquant"\n(à paramétrer par Admin);
+  }
+  stop
+endif
+
+partition "Opérateur colis" {
+  :Associer n° de suivi (Lettre suivie)\n(saisie);
+}
+
+partition "Système" {
+  :Mettre à jour statut;
+  :Statut = EXPEDIE;
+  :Enregistrer historique;
+}
+
+partition "Opérateur colis" {
+  :Imprimer documents;
+}
+
+if (Email activé ?) then (Oui)
+  partition "Système" {
+    :Envoyer email (optionnel);
+  }
+endif
+
+stop
+@enduml

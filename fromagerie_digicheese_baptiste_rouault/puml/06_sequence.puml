@@ -1,0 +1,72 @@
+@startuml
+title DIGICHEESE — Diagramme de séquence (Gestion des colis)
+skinparam shadowing false
+
+actor "Opérateur colis" as Op
+boundary "UI Web" as UI
+control "Service Commandes/Colis" as Svc
+control "Service Conditionnement" as Pack
+control "Service Affranchissement" as Postage
+database "BDD" as DB
+external "La Poste\n(Suivi/Tarifs)" as LP
+control "Service Email" as Mail
+
+Op -> UI : Se connecter
+UI -> Svc : authenticate()
+Svc -> DB : SELECT user/profile
+DB --> Svc : ok
+Svc --> UI : session + droits
+
+Op -> UI : Rechercher/Créer client
+UI -> Svc : upsertClient(data)
+Svc -> DB : INSERT/UPDATE client
+DB --> Svc : clientId
+Svc --> UI : clientId
+
+Op -> UI : Créer commande
+UI -> Svc : createOrder(clientId, meta)
+Svc -> DB : INSERT order
+DB --> Svc : orderId
+Svc --> UI : orderId
+
+Op -> UI : Ajouter lignes (objets/qtés)
+UI -> Svc : addOrderLines(orderId, lines)
+Svc -> DB : INSERT order_lines
+DB --> Svc : ok
+Svc --> UI : ok
+
+Op -> UI : Calculer conditionnement
+UI -> Pack : computePackaging(orderId)
+Pack -> DB : SELECT lines + rules + packages
+DB --> Pack : data
+Pack --> UI : chosenPackage + packagingPlan\n(ou erreur)
+
+UI -> Postage : computeWeightAndTariff(orderId, chosenPackage)
+Postage -> DB : SELECT weights + postal_rates
+DB --> Postage : data
+Postage --> UI : totalWeight + price
+
+Op -> UI : Saisir n° de suivi (Lettre suivie)
+UI -> Svc : setTracking(orderId, trackingNo)
+Svc -> DB : UPDATE order/parcel tracking + status
+DB --> Svc : ok
+
+alt (Option : vérifier format / existence)
+  Svc -> LP : verifyTracking(trackingNo)
+  LP --> Svc : ok/ko
+end
+
+Svc -> DB : INSERT history_event("Expédié", date, user)
+DB --> Svc : ok
+
+opt (Email client)
+  UI -> Mail : sendTrackingEmail(clientId, trackingNo)
+  Mail -> DB : SELECT client email
+  DB --> Mail : email
+  Mail --> UI : sent
+end
+
+Op -> UI : Imprimer documents
+UI --> Op : PDF / export
+
+@enduml

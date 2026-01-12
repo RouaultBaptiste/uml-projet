@@ -1,0 +1,120 @@
+@startuml
+title DIGICHEESE — Cas d’utilisation (périmètre gestion des colis)
+
+' ==========================================================
+' Objectif :
+' - Montrer QUI fait QUOI dans le SI (périmètre "colis")
+' - Distinguer fonctions cœur (<<include>>) et options (<<extend>>)
+' - Clarifier que La Poste intervient pour le SUIVI (Lettre suivie),
+'   tandis que les TARIFS sont paramétrés en base (Admin).
+' ==========================================================
+
+left to right direction
+skinparam shadowing false
+
+actor "Opérateur colis" as OpColis
+actor "Opérateur stock" as OpStock
+actor "Administrateur" as Admin
+actor "Direction" as Dir
+actor "La Poste\n(Suivi - Lettre suivie)" as Poste
+
+rectangle "Système DIGICHEESE" {
+
+  ' ---------- Authentification / droits ----------
+  usecase "S'authentifier" as UCAuth
+
+  ' ---------- Domaine : Clients / Commandes ----------
+  usecase "Gérer clients" as UCClients
+  usecase "Rechercher commande\n(commande en cours)" as UCSearchOrder
+  usecase "Créer / modifier commande" as UCCommande
+  usecase "Ajouter lignes de commande\n(objets, quantités)" as UCLignes
+
+  ' ---------- Domaine : Colis (conditionnement + affranchissement) ----------
+  usecase "Calculer conditionnement\n(choix emballage)" as UCCond
+  usecase "Choisir emballage manuellement" as UCManualPack
+  usecase "Scinder en plusieurs colis" as UCSplit
+
+  usecase "Calculer poids total\n(articles + emballage)" as UCPoids
+  usecase "Calculer affranchissement\n(poids -> tarif)" as UCAff
+
+  usecase "Associer n° de suivi\n(Lettre suivie)" as UCSuivi
+  usecase "Mettre à jour statut\ncommande/colis" as UCStatut
+  usecase "Consulter / alimenter\nhistorique colis" as UCHisto
+
+  ' ---------- Sorties ----------
+  usecase "Imprimer documents\n(bon, liste, etc.)" as UCPrint
+  usecase "Envoyer email client\n(notification/suivi)" as UCEmail
+  usecase "Générer export mailing\n(fichier texte)" as UCMailing
+
+  ' ---------- Pilotage ----------
+  usecase "Consulter statistiques\n(mois/année)" as UCStats
+
+  ' ---------- Paramétrage ----------
+  usecase "Gérer objets / catalogue" as UCObjets
+  usecase "Gérer stocks" as UCStocks
+  usecase "Paramétrer emballages\n+ règles min/max" as UCEmballages
+  usecase "Paramétrer tarifs postaux\n(tranches de poids)" as UCTarifs
+  usecase "Gérer utilisateurs / profils" as UCUsers
+}
+
+' ==========================================================
+' Liens acteurs -> UC
+' ==========================================================
+OpColis --> UCAuth
+OpColis --> UCClients
+OpColis --> UCSearchOrder
+OpColis --> UCCommande
+OpColis --> UCLignes
+OpColis --> UCCond
+OpColis --> UCAff
+OpColis --> UCSuivi
+OpColis --> UCStatut
+OpColis --> UCHisto
+OpColis --> UCPrint
+OpColis --> UCEmail
+OpColis --> UCMailing
+OpColis --> UCStats
+
+OpStock --> UCAuth
+OpStock --> UCObjets
+OpStock --> UCStocks
+
+Admin --> UCAuth
+Admin --> UCObjets
+Admin --> UCEmballages
+Admin --> UCTarifs
+Admin --> UCUsers
+
+Dir --> UCAuth
+Dir --> UCStats
+
+' ==========================================================
+' Relations include / extend
+' ==========================================================
+' include = étape indispensable réutilisée dans plusieurs UC
+UCAff ..> UCPoids : <<include>>
+UCCond ..> UCPoids : <<include>>
+
+' extend = option/branche alternative déclenchée sous condition
+UCManualPack ..> UCCond : <<extend>>\nsi auto impossible
+UCSplit ..> UCCond : <<extend>>\nsi aucun emballage compatible
+UCEmail ..> UCSuivi : <<extend>>\nsi email activé
+
+' Interaction externe : suivi
+Poste <-- UCSuivi : n° de suivi
+
+' ==========================================================
+' Notes TP
+' ==========================================================
+note top of UCCond
+Périmètre TP : "gestion des colis".
+Le conditionnement respecte des règles min/max (par objet)
+et peut échouer → choix manuel ou scission.
+end note
+
+note right of UCTarifs
+Les tarifs postaux sont paramétrés
+dans l'application (Admin) et utilisés
+par le calcul d'affranchissement.
+end note
+@enduml

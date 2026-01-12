@@ -1,0 +1,170 @@
+@startuml
+title DIGICHEESE — Diagramme de classes (Gestion des colis)
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+' =========================
+' ENUMS
+' =========================
+enum StatutCommande {
+  A_PREPARER
+  PREPAREE
+  CONDITIONNEE
+  AFFRANCHIEE
+  EXPEDIEE
+  ANNULEE
+}
+
+enum StatutColis {
+  A_CONDITIONNER
+  CONDITIONNE
+  AFFRANCHI
+  EXPEDIE
+}
+
+' =========================
+' CLASSES
+' =========================
+class Client {
+  +id: UUID
+  +codeClient: String
+  +civilite: String
+  +nom: String
+  +prenom: String
+  +adresse1: String
+  +adresse2: String
+  +adresse3: String
+  +cp: String
+  +ville: String
+  +telephone: String
+  +email: String
+  +newsletter: Boolean
+}
+
+class Commande {
+  +id: UUID
+  +dateCreation: Date
+  +statut: StatutCommande
+  +commentaire: String
+  +pointsUtilises: Integer
+  +totalPoidsGr: Integer
+  +totalAffranchissement: Decimal <<derived>>
+}
+
+class LigneCommande {
+  +id: UUID
+  +quantite: Integer
+  +points: Integer
+  +poidsUnitaireGr: Integer
+  +poidsTotalGr(): Integer
+}
+
+class Objet {
+  +id: UUID
+  +reference: String
+  +libelle: String
+  +categorie: String
+  +points: Integer
+  +poidsUnitaireGr: Integer
+  +actif: Boolean
+}
+
+class Colis {
+  +id: UUID
+  +statut: StatutColis
+  +poidsTotalGr: Integer
+  +trackingNo: String
+  +prixAffranchissement: Decimal
+  +typeEnvoi: String
+}
+
+class Emballage {
+  +id: UUID
+  +code: String
+  +libelle: String
+  +poidsGr: Integer
+  +dimensions: String
+  +actif: Boolean
+}
+
+class RegleConditionnement {
+  +id: UUID
+  +quantiteMin: Integer
+  +quantiteMax: Integer
+  +priorite: Integer
+}
+
+class TarifPostal {
+  +id: UUID
+  +poidsMinGr: Integer
+  +poidsMaxGr: Integer
+  +prix: Decimal
+  +typeEnvoi: String
+}
+
+class EvenementHistorique {
+  +id: UUID
+  +dateHeure: DateTime
+  +type: String
+  +details: String
+}
+
+class Utilisateur {
+  +id: UUID
+  +login: String
+  +nom: String
+  +prenom: String
+  +profil: String
+  +actif: Boolean
+}
+
+' =========================
+' RELATIONS (avec multiplicités)
+' =========================
+Client "1" -- "0..*" Commande : passe >
+
+' (3) Compositions : une commande "possède" ses lignes et ses colis
+Commande "1" *-- "1..*" LigneCommande : contient >
+Commande "1" *-- "1..*" Colis : génère >
+
+LigneCommande "*" -- "1" Objet : concerne >
+
+Colis "1" -- "1" Emballage : utilise >
+
+' (2) Lien explicite : un colis applique (ou non) un tarif postal
+Colis "0..1" --> "1" TarifPostal : applique >
+
+' Règles min/max : pour un objet, un emballage autorisé avec contraintes
+RegleConditionnement "*" -- "1" Objet : pour >
+RegleConditionnement "*" -- "1" Emballage : autorise >
+
+' Historique / traçabilité
+Commande "1" -- "0..*" EvenementHistorique : historise >
+EvenementHistorique "*" -- "1" Utilisateur : par >
+
+' =========================
+' NOTES METIER (TP)
+' =========================
+note right of RegleConditionnement
+Règle de conditionnement (min/max) :
+- Pour un Objet donné, on définit
+  un Emballage compatible
+- quantiteMin <= qte <= quantiteMax
+- priorite sert à trancher si plusieurs
+end note
+
+note right of TarifPostal
+Tarif applicable si :
+poidsMinGr <= poidsTotalGr <= poidsMaxGr
+end note
+
+note bottom of Colis
+(1) Le trackingNo est porté par Colis
+(car une Commande peut générer plusieurs colis)
+end note
+
+note bottom of Commande
+totalAffranchissement est dérivé :
+= somme(prixAffranchissement des colis)
+end note
+@enduml

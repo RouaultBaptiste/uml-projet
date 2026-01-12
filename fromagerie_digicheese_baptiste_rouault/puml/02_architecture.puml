@@ -1,0 +1,49 @@
+@startuml
+title DIGICHEESE — Schéma global d’architecture (cible "client léger / intranet") 
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor "Opérateur colis" as op
+actor "Opérateur stock" as stock
+actor "Administrateur" as admin
+actor "Direction" as dir
+
+node "Réseau interne / Intranet" {
+  [Navigateur Web\n(PC atelier/bureau)] as browser
+}
+
+cloud "Services externes" {
+  [API La Poste / Suivi\n(Lettre suivie)] as laposte
+}
+
+package "Application DIGICHEESE (Client léger)" {
+  [Front Web\n(UI)] as front
+  [Back-end API\n(Règles métier)] as api
+  [Service emails] as mail
+  [Service exports/impressions] as export
+}
+
+database "Base de données\n(Clients, Commandes, Colis,\nObjets, Emballages, Tarifs, Historique, Utilisateurs/Profils)" as db
+
+op --> browser
+stock --> browser
+admin --> browser
+dir --> browser
+
+browser --> front : HTTPS
+front --> api : REST/JSON
+
+api --> db : SQL
+api --> mail : SMTP/API
+api --> export : PDF/CSV/TXT
+api --> laposte : (option) vérification n° suivi\nou saisie manuelle du n° suivi
+
+note right of api
+- Authentification + autorisations
+  (session / rôle / profil en BDD)
+- Calcul conditionnement (règles min/max)
+- Calcul affranchissement (poids -> tarif en BDD)
+- Gestion statuts + historique
+end note
+@endumls

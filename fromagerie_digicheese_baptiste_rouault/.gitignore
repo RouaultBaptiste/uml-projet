@@ -1,0 +1,48 @@
+# Fichiers temporaires
+*.tmp
+*.temp
+*.log
+*.bak
+*~
+
+# Fichiers de configuration IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Fichiers système Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Fichiers macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Fichiers Linux
+*~
+
+# Documents de construction
+build/
+dist/
+target/
+
+# Fichiers de dépendances
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Images générées automatiquement
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+
+# Garder les images existantes
+!imageUML/
+!Schéma global d'architecture.png
