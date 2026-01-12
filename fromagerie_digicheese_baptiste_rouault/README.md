@@ -15,15 +15,19 @@ fromagerie_digicheese_baptiste_rouault/
 ├── README.md                    # Ce fichier
 ├── .gitignore                   # Fichiers ignorés par Git
 ├── 01_acteurs_roles.md          # Identification des acteurs et rôles
-├── 04_scenario_gestion_colis.md  # Scénario de gestion des colis
+├── 04_scenario_gestion_colis.md # Scénario de gestion des colis
 ├── Schéma global d'architecture.png  # Architecture globale
-├── imageUML/                    # Images des diagrammes UML
-└── puml/                        # Fichiers source PlantUML
-    ├── 02_architecture.puml     # Diagramme d'architecture
-    ├── 03_use_cases.puml        # Diagramme des cas d'utilisation
-    ├── 05_activity.puml         # Diagramme d'activité
-    ├── 06_sequence.puml         # Diagramme de séquence
-    └── 07_class_diagram.puml    # Diagramme de classes
+├── 02_architecture.puml         # Diagramme d'architecture (source)
+├── 03_use_cases.puml            # Diagramme des cas d'utilisation (source)
+├── 05_activity.puml             # Diagramme d'activité (source)
+├── 06_sequence.puml             # Diagramme de séquence (source)
+├── 07_class_diagram.puml        # Diagramme de classes (source)
+├── 02_architecture.png          # Diagramme d'architecture (image)
+├── 03_use_cache.png             # Diagramme des cas d'utilisation (image)
+├── 05_activity.png              # Diagramme d'activité (image)
+├── 05_activityback.png          # Diagramme d'activité (backup)
+├── 06_sequence.png              # Diagramme de séquence (image)
+└── 07_class_diagram.png         # Diagramme de classes (image)
 ```
 
 ## Diagrammes UML réalisés
@@ -49,7 +53,7 @@ Pour générer les diagrammes à partir des fichiers PlantUML :
 # Installation de PlantUML (si nécessaire)
 # Utiliser un éditeur supportant PlantUML comme VS Code avec l'extension PlantUML
 # Ou utiliser la ligne de commande :
-java -jar plantuml.jar puml/*.puml
+java -jar plantuml.jar *.puml
 ```
 
 ## Auteur

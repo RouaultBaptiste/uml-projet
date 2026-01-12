@@ -36,13 +36,11 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Images générées automatiquement
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.svg
-
 # Garder les images existantes
-!imageUML/
+!02_architecture.png
+!03_use_cache.png
+!05_activity.png
+!05_activityback.png
+!06_sequence.png
+!07_class_diagram.png
 !Schéma global d'architecture.png
