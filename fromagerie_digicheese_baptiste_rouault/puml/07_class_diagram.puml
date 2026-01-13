@@ -1,5 +1,5 @@
 @startuml
-title DIGICHEESE — Diagramme de classes (Gestion des colis)
+title DIGICHEESE — Diagramme de classes (Gestion des colis) — v1.2 (avec Emplacements)
 skinparam shadowing false
 skinparam classAttributeIconSize 0
 
@@ -118,12 +118,27 @@ class Utilisateur {
   +actif: Boolean
 }
 
+' ====== AJOUT PDF : Emplacements (à conserver) ======
+class Emplacement {
+  +id: UUID
+  +code: String
+  +libelle: String
+  +actif: Boolean
+}
+
+' Optionnel (si tu veux coller à l’existant "Enseignes")
+class Enseigne {
+  +id: UUID
+  +code: String
+  +libelle: String
+  +actif: Boolean
+}
+
 ' =========================
 ' RELATIONS (avec multiplicités)
 ' =========================
 Client "1" -- "0..*" Commande : passe >
 
-' (3) Compositions : une commande "possède" ses lignes et ses colis
 Commande "1" *-- "1..*" LigneCommande : contient >
 Commande "1" *-- "1..*" Colis : génère >
 
@@ -131,16 +146,17 @@ LigneCommande "*" -- "1" Objet : concerne >
 
 Colis "1" -- "1" Emballage : utilise >
 
-' (2) Lien explicite : un colis applique (ou non) un tarif postal
 Colis "0..1" --> "1" TarifPostal : applique >
 
-' Règles min/max : pour un objet, un emballage autorisé avec contraintes
 RegleConditionnement "*" -- "1" Objet : pour >
 RegleConditionnement "*" -- "1" Emballage : autorise >
 
-' Historique / traçabilité
 Commande "1" -- "0..*" EvenementHistorique : historise >
 EvenementHistorique "*" -- "1" Utilisateur : par >
+
+' ====== Lien simple Emplacement (conforme PDF) ======
+Commande "0..*" --> "0..1" Emplacement : associe >
+Emplacement "0..*" --> "0..1" Enseigne : appartient >
 
 ' =========================
 ' NOTES METIER (TP)
@@ -159,12 +175,17 @@ poidsMinGr <= poidsTotalGr <= poidsMaxGr
 end note
 
 note bottom of Colis
-(1) Le trackingNo est porté par Colis
+Le trackingNo est porté par Colis
 (car une Commande peut générer plusieurs colis)
 end note
 
 note bottom of Commande
 totalAffranchissement est dérivé :
 = somme(prixAffranchissement des colis)
+end note
+
+note right of Emplacement
+Fonctionnalité existante demandée
+à conserver (même si peu utilisée).
 end note
 @enduml

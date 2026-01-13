@@ -1,49 +1,82 @@
 @startuml
-title DIGICHEESE — Schéma global d’architecture (cible "client léger / intranet") 
-
-skinparam componentStyle rectangle
+title DIGICHEESE — Schéma global (fonctionnel) — Gestion des colis
 skinparam shadowing false
+left to right direction
+skinparam componentStyle rectangle
 
-actor "Opérateur colis" as op
-actor "Opérateur stock" as stock
-actor "Administrateur" as admin
-actor "Direction" as dir
+' =========================
+' Acteurs
+' =========================
+actor "Opérateur colis" as OpColis
+actor "Opérateur stock" as OpStock
+actor "Administrateur\n(profils & statistiques)" as Admin
 
-node "Réseau interne / Intranet" {
-  [Navigateur Web\n(PC atelier/bureau)] as browser
+' =========================
+' Système
+' =========================
+rectangle "Système DIGICHEESE" as SYS {
+
+  [Gestion clients] as FClients
+  [Gestion commandes\n& colis] as FCmd
+  [Exports / impressions\n(bons, listes, mailing)] as FExport
+  [Emails\n(notification/suivi)] as FMail
+
+  [Authentification\n+ gestion des profils] as FAuth
+  [Objets & stocks] as FStock
+  [Paramétrage\n(emballages, règles,\ntranches tarifs, référentiels)] as FAdmin
+
+  [Conditionnement\n(règles min/max)] as FPack
+  [Affranchissement\n(poids -> tarif)] as FPost
+  [Suivi colis\n(Lettre suivie)] as FTrack
+
+  [Statistiques\n(mois/année)] as FStats
+  [Historique\n(statuts, événements)] as FHist
 }
 
-cloud "Services externes" {
-  [API La Poste / Suivi\n(Lettre suivie)] as laposte
-}
+' =========================
+' Externe
+' =========================
+cloud "La Poste\n(Suivi Lettre suivie)" as Poste
 
-package "Application DIGICHEESE (Client léger)" {
-  [Front Web\n(UI)] as front
-  [Back-end API\n(Règles métier)] as api
-  [Service emails] as mail
-  [Service exports/impressions] as export
-}
+' =========================
+' Interactions Acteurs -> Fonctions
+' =========================
+OpColis --> FAuth
+OpColis --> FClients
+OpColis --> FCmd
+OpColis --> FPack
+OpColis --> FPost
+OpColis --> FTrack
+OpColis --> FHist
+OpColis --> FExport
+OpColis --> FMail
+OpColis --> FStats
 
-database "Base de données\n(Clients, Commandes, Colis,\nObjets, Emballages, Tarifs, Historique, Utilisateurs/Profils)" as db
+OpStock --> FAuth
+OpStock --> FStock
 
-op --> browser
-stock --> browser
-admin --> browser
-dir --> browser
+Admin --> FAuth
+Admin --> FAdmin
+Admin --> FStats
 
-browser --> front : HTTPS
-front --> api : REST/JSON
+' =========================
+' Liens fonctionnels (logique métier)
+' =========================
+FCmd --> FPack : préparer colis
+FPack --> FPost : calcul poids
+FPost --> FTrack : associer n° suivi
 
-api --> db : SQL
-api --> mail : SMTP/API
-api --> export : PDF/CSV/TXT
-api --> laposte : (option) vérification n° suivi\nou saisie manuelle du n° suivi
+FCmd --> FHist : mise à jour statuts
+FTrack --> FHist : tracer événements
+FStats --> FHist : exploite données
 
-note right of api
-- Authentification + autorisations
-  (session / rôle / profil en BDD)
-- Calcul conditionnement (règles min/max)
-- Calcul affranchissement (poids -> tarif en BDD)
-- Gestion statuts + historique
+' =========================
+' Interaction externe
+' =========================
+FTrack --> Poste : n° suivi / consultation
+
+note right of FStats
+Les statistiques sont accessibles
+selon le profil (ex : Admin / Responsable).
 end note
-@endumls
+@enduml

@@ -8,7 +8,7 @@ control "Service Commandes/Colis" as Svc
 control "Service Conditionnement" as Pack
 control "Service Affranchissement" as Postage
 database "BDD" as DB
-external "La Poste\n(Suivi/Tarifs)" as LP
+participant "La Poste\n(Suivi - Lettre suivie)" as LP <<Externe>>
 control "Service Email" as Mail
 
 Op -> UI : Se connecter
@@ -48,18 +48,18 @@ Postage --> UI : totalWeight + price
 
 Op -> UI : Saisir n° de suivi (Lettre suivie)
 UI -> Svc : setTracking(orderId, trackingNo)
-Svc -> DB : UPDATE order/parcel tracking + status
+Svc -> DB : UPDATE tracking + status
 DB --> Svc : ok
 
-alt (Option : vérifier format / existence)
+opt Vérifier n° de suivi (option)
   Svc -> LP : verifyTracking(trackingNo)
   LP --> Svc : ok/ko
 end
 
-Svc -> DB : INSERT history_event("Expédié", date, user)
+Svc -> DB : INSERT history_event("Expedie", date, user)
 DB --> Svc : ok
 
-opt (Email client)
+opt Email client (option)
   UI -> Mail : sendTrackingEmail(clientId, trackingNo)
   Mail -> DB : SELECT client email
   DB --> Mail : email
@@ -68,5 +68,4 @@ end
 
 Op -> UI : Imprimer documents
 UI --> Op : PDF / export
-
 @enduml
