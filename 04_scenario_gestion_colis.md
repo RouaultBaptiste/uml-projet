@@ -1,4 +1,4 @@
-# DIGICHEESE — Scénario “Gestion des colis” (texte)
+# DIGICHEESE — Scénario “Gestion des colis” 
 
 ## Préconditions
 - L’utilisateur (opérateur colis) est **authentifié** et dispose du rôle “Opérateur colis”.
