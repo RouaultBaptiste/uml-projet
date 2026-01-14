@@ -48,8 +48,8 @@ Référence : *LA FROMAGERIE DIGICHEESE V1.0*.
 **Responsabilités :**
 - Maintenir à jour les règles métier (conditionnement / affranchissement)
 
----
-
+```
+VUE AVEC LE CLIENT PAS BEOSOIN DANS EN COMMENTAIRE //""
 ### A4 — Direction / Manager (consultation)
 **Mission :** piloter l’activité via indicateurs.  
 **Droits :**
@@ -59,8 +59,8 @@ Référence : *LA FROMAGERIE DIGICHEESE V1.0*.
 
 **Responsabilités :**
 - Analyse & reporting
-
----
+""
+```
 
 ## 2) Acteurs externes (hors SI, mais influencent le flux)
 
