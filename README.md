@@ -5,32 +5,32 @@
 **TP :** Conception d'une application avec UML  
 **Version :** 1.2  
 
-## 📋 Description
+##  Description
 
 Ce projet contient les livrables du TP de conception d'application avec UML pour la fromagerie DigiCheese. L'objectif est de modéliser une application de gestion pour une fromagerie en utilisant les différents diagrammes UML.
 
-## 🎯 Livrable principal
+##  Livrable principal
 
-**📊 PowerPoint de présentation**  
+** PowerPoint de présentation**  
 `baptiste-rouault_powerpoint_fromagerie_digicheese_v1.pptx`  
 *Document le plus important - Présentation complète du projet*
 
-## 📁 Structure du projet
+##  Structure du projet
 
 ```
 fromagerie_digicheese_baptiste_rouault/
 ├── README.md                                    # Ce fichier
 ├── .gitignore                                   # Fichiers ignorés par Git
-├── 📊 baptiste-rouault_powerpoint_fromagerie_digicheese_v1.pptx  # Présentation principale
-├── 📄 01_acteurs_roles.md                       # Identification des acteurs et rôles
-├── 📄 04_scenario_gestion_colis.md              # Scénario de gestion des colis
-├── 📁 puml/                                     # Fichiers source PlantUML
+├──  baptiste-rouault_powerpoint_fromagerie_digicheese_v1.pptx  # Présentation principale
+├──  01_acteurs_roles.md                       # Identification des acteurs et rôles
+├──  04_scenario_gestion_colis.md              # Scénario de gestion des colis
+├──  puml/                                     # Fichiers source PlantUML
 │   ├── 02_architecture.puml                     # Diagramme d'architecture
 │   ├── 03_use_cases.puml                        # Diagramme des cas d'utilisation
 │   ├── 05_activity.puml                         # Diagramme d'activité
 │   ├── 06_sequence.puml                         # Diagramme de séquence
 │   └── 07_class_diagram.puml                    # Diagramme de classes (v1.2 avec Emplacements)
-└── 📁 images/                                   # Images des diagrammes générés
+└──  images/                                   # Images des diagrammes générés
     ├── 02_architecture.png                      # Architecture système
     ├── 02_architecture_blanc.png                # Architecture (version blanche)
     ├── 03_use_cache.png                         # Cas d'utilisation
@@ -41,21 +41,21 @@ fromagerie_digicheese_baptiste_rouault/
     └── architecture.png                         # Architecture (version alternative)
 ```
 
-## 📐 Diagrammes UML réalisés
+##  Diagrammes UML réalisés
 
-1. **🎭 Diagramme des acteurs et rôles** - Identification des différents acteurs du système
-2. **🏗️ Diagramme d'architecture** - Vue globale de l'architecture système (client léger / intranet)
-3. **📋 Diagramme des cas d'utilisation** - Fonctionnalités principales du système
-4. **⚡ Diagramme d'activité** - Flux de processus métier (gestion des colis)
-5. **🔄 Diagramme de séquence** - Interactions entre les composants
-6. **🏛️ Diagramme de classes** - Structure des données et relations (v1.2 avec Emplacements)
+1. ** Diagramme des acteurs et rôles** - Identification des différents acteurs du système
+2. ** Diagramme d'architecture** - Vue globale de l'architecture système (client léger / intranet)
+3. ** Diagramme des cas d'utilisation** - Fonctionnalités principales du système
+4. ** Diagramme d'activité** - Flux de processus métier (gestion des colis)
+5. ** Diagramme de séquence** - Interactions entre les composants
+6. ** Diagramme de classes** - Structure des données et relations (v1.2 avec Emplacements)
 
 ## 🛠️ Technologies utilisées
 
-- **📊 PlantUML** - Génération des diagrammes UML
-- **📝 Markdown** - Documentation technique
-- **💾 Git** - Versioning et suivi des modifications
-- **🎯 PowerPoint** - Présentation finale du projet
+- ** PlantUML** - Génération des diagrammes UML
+- ** Markdown** - Documentation technique
+- ** Git** - Versioning et suivi des modifications
+- ** PowerPoint** - Présentation finale du projet
 
 ## ⚙️ Compilation des diagrammes
 
@@ -68,24 +68,24 @@ Pour générer les diagrammes à partir des fichiers PlantUML :
 java -jar plantuml.jar puml/*.puml
 ```
 
-## 📊 Consultation du projet
+##  Consultation du projet
 
-**🎯 Document prioritaire à consulter :**
+** Document prioritaire à consulter :**
 - `baptiste-rouault_powerpoint_fromagerie_digicheese_v1.pptx` - Présentation complète du projet
 
-**📁 Documentation technique :**
+** Documentation technique :**
 - `01_acteurs_roles.md` - Analyse des acteurs et leurs responsabilités
 - `04_scenario_gestion_colis.md` - Scénario détaillé de gestion des colis
 
-**🖼️ Diagrammes générés :**
+** Diagrammes générés :**
 - Dossier `images/` - Tous les diagrammes UML au format PNG
 
-## 👨‍💻 Auteur
+##  Auteur
 
 **Baptiste Rouault**  
-Étudiant en M1 CYBER-RESSOURCE  
-TP de Conception d'une application avec UML  
-📧 Contact : [disponible sur demande]
+Étudiant en M1 CYBER - formation diginamic 
+TP de Conception d'une application et Architecure avec UML  
+📧 Contact : disponible sur demande 
 
 ---
 
